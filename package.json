@@ -1,0 +1,24 @@
+{
+  "name": "hendricks",
+  "version": "0.0.0",
+  "description": "Very tiny byte encoding",
+  "main": "https://github.com/safezero/hendricks.git",
+  "scripts": {
+    "test": "mocha --bail"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/safezero/hendricks.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/safezero/hendricks/issues"
+  },
+  "homepage": "https://github.com/safezero/hendricks#decodeme",
+  "dependencies": {
+    "arguguard": "^2.1.1",
+    "intcoder": "0.0.3",
+    "testable-error": "^0.1.1"
+  }
+}
