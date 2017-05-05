@@ -2,6 +2,9 @@
 
 > Protocol encoding for a new internet
 
+![Richard Hendricks](https://vignette4.wikia.nocookie.net/silicon-valley/images/3/33/Richard_Hendricks.jpg/revision/latest/scale-to-width-down/310?cb=20150526104602)
+[via wikia.com](http://silicon-valley.wikia.com/wiki/Richard_Hendricks)
+
 ## Install
 
 Install with [npm](https://www.npmjs.com/)
@@ -16,7 +19,7 @@ There is a movement among technologists, activists, and entrepreneurs all around
 
 Protocols are not like services. They are difficult to upgrade and must be precisely specified. They often operate in environments where minimizing storage costs is extremely important (such as the Ethereum Virtual Machine). Protocols also need the ability to "fork". For example in the dev p2p protocol, the first byte instructs the consumer how to interpret rest of the message (if the first byte is `0x00`, interpret the remaining bytes as a `hello`, if the first byte is `0x01`, interpret the remaining bytes as a `disconnect`).
 
-Hendricks aims to let any protocol developer create easy upgradable protocols.
+Hendricks aims to let any protocol developer create easily upgradable, and forkable, protocols.
 
 Hendricks has no spec language like protobuf. Rather a specifier called [dinesh](dinesh) exists to create a JSON spec. Specifiers are split out to allow for different specs that makes different sense in different contexts (for example, languages which don't support JSON).
 
