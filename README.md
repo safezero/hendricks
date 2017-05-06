@@ -162,10 +162,6 @@ versionTemplate.encode({
 // > new Uint8Array([0, 2, 1, 2, ..., 33, 1, 2, ..., 33])
 ```
 
-### Length Encoding
-
-Length is encoded using big-endian with left-padding.
-
 ## Usage
 
 ```js
