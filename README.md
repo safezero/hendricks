@@ -1,9 +1,8 @@
 # hendricks
 
-> Protocol encoding for a new internet
+> Protocol encoding for a new internet.
 
 ![Richard Hendricks](https://vignette4.wikia.nocookie.net/silicon-valley/images/3/33/Richard_Hendricks.jpg/revision/latest/scale-to-width-down/310?cb=20150526104602)
-[via wikia.com](http://silicon-valley.wikia.com/wiki/Richard_Hendricks)
 
 ## Install
 
@@ -15,70 +14,136 @@ $ npm i hendricks --save-dev
 
 ### Why
 
-There is a movement among technologists, activists, and entrepreneurs all around the world to "decentralize" the internet. What this means in practice is turning centrally operated services into peer-to-peer protocols.
+Web3 seeks to "decentralize" the internet. What this means in practice is turning centrally operated services into peer-to-peer protocols.
 
-Protocols are not like services. They are difficult to upgrade and must be precisely specified. They often operate in environments where minimizing storage costs is extremely important (such as the Ethereum Virtual Machine). Protocols also need the ability to "fork". For example in the dev p2p protocol, the first byte instructs the consumer how to interpret rest of the message (if the first byte is `0x00`, interpret the remaining bytes as a `hello`, if the first byte is `0x01`, interpret the remaining bytes as a `disconnect`).
+Encoding data for protocols is not like encoding data for services. Protocols are difficult to upgrade and must be precisely specified. They often operate in environments where minimizing storage costs is extremely important (such as the Ethereum Virtual Machine).
 
-Hendricks aims to let any protocol developer create easily upgradable, and forkable, protocols.
+Protocols also need the ability to "split" to a different schema based on a version/type byte. For example in the dev p2p protocol, the first byte instructs the consumer how to interpret rest of the message (if the first byte is `0x00`, interpret the remaining bytes as a `hello`, if the first byte is `0x01`, interpret the remaining bytes as a `disconnect`).
 
-Hendricks has no spec language like protobuf. Rather a specifier called [dinesh](dinesh) exists to create a JSON spec. Specifiers are split out to allow for different specs that makes different sense in different contexts (for example, languages which don't support JSON).
+Hendricks lets any protocol developer create easily upgradable, and splitable, protocols while being extremely conservative with bytes.
 
-### Molds
+Hendricks has no official specifier like protobuf's proto files. Rather a specifier called [dinesh](dinesh) exists to create a JSON spec. Specifiers are split out to allow for different specs that makes different sense in different contexts (for example, languages which don't support cleanly support JSON).
 
-The primary concept in hendricks is molds. You can think of a mold like a container that data can be placed in. Each mold has their own encoding scheme, and molds can be nested into other molds. Every schema has a single root mold.
+### Binary only
 
-#### 1. Fixed Molds
+Hendricks has no support for strings, integers, etc. Everything must be converted into binary before being encoded. For the javascript implementation, that means `Uint8Array`s.
 
-Fixed molds allow for fixed-length encoding. When defining a fixed mold, the length of the mold must be specified.
+### Templates
+
+The primary concept in hendricks is the template. You can think of a template like a container that data can be placed in. Each template has their own encoding scheme, and templates can be nested into other templates. Every schema has a single root template.
+
+There are 4 kinds of templates: fixed templates (1), dynamic tempates (2), list templates (3), dictionary templates (4), split templates templates (5).
+
+#### 1. Fixed Templates
+
+Fixed templates are designed for fixed-length data. They are useful when you know the size of the data never changes, for example elliptic curve keypairs and IP addresses. When defining a fixed template, the size of the data must be specified.
+
+Since the size of the data is fixed and needs no length-encoding, an encoding of a fixed template is simply the data itself.
 
 ```js
-publicKeyMold = new Fixed('publicKey', 33)
-privateKeyKeyMold = new Fixed('privateKey', 32)
+publicKeyTemplate = new Fixed('publicKey', 33)
+privateKeyKeyTemplate = new Fixed('privateKey', 32)
+
+myPublicKey = new Uint8Array([1, 2, ..., 33])
+myPrivateKey = new Uint8Array([1, 2, ..., 32])
+
+publicKeyTemplate.encode(myPublicKey)
+// > Uint8Array([1, 2, ..., 33])
+privateKeyKeyTemplate.encode(myPrivateKey)
+// > Uint8Array([1, 2, ..., 32])
 ```
 
-#### 2. Dynamic Molds
+#### 2. Dynamic Templates
 
-Dynamic molds allow for variable-length encoding. When defining a dynamic mold, the *length encoding length* is specified. For example, if a dynamic field contains data between 0 and 255 bytes, a *length encoding length* of 1 is needed. If a dynamic field contains between 0 and 256**2 bytes, a *length encoding length* of 2 is needed.
+Dynamic templates allow for encoding variable-length data. When defining a dynamic template, the number of bytes needed to encode the length, referred to as the *length encoding length*, is specified. For example, if a dynamic field must contain data between 0 and 255 bytes, a *length encoding length* of 1 is needed. If a dynamic field contains between 0 and (256**2 - 1) bytes, a *length encoding length* of 2 is needed.
+
+Length Encoding Length | Min | Max |
+--- | --- | --- |
+1 | 0 | 255 |
+2 | 0 | (256 ** 2) - 1
+3 | 0 | (256 ** 3) - 1
+4 | 0 | (256 ** 4) - 1
 
 ```js
-nameMold = new Dynamic('name', 1) // name between 0 and 255 bytes
-infoMold = new Dynamic('info', 2) // name between 0 and 255 ** 2 bytes
+nameTemplate = new Dynamic('name', 1) // name between 0 and 255 bytes
+infoTemplate = new Dynamic('info', 2) // name between 0 and 255 ** 2 bytes
 
 name.encode(new Uint8Array([1, 2, 3, 4]))
 // > Uint8Array([4, 1, 2, 3, 4])
 
-info.encode(new Uint8Array([5, 6, 7, 8, 9, 10]))
-// > Uint8Array([0, 5, 6, 7, 8, 9, 10])
+info.encode(new Uint8Array([5, 6, 7, 8, 9]))
+// > Uint8Array([0, 4, 5, 6, 7, 8, 9, 10])
 ```
 
-#### 3. List Molds
+#### 3. List Templates
 
-List molds allow for encoding arrays of data, where each element in the array is of the same mold. When defining a list mold, a *length encoding length* child mold is needed.
+List templates allow for encoding arrays of data, where each element in the array is of the same template. When defining a list template, a *length encoding length* child template is needed.
 
 ```js
-publicKeys = new List('publicKeys', 1, publicKey) // between 0 and 255 publicKeys
+publicKeysTemplate = new List('publicKeys', 1, publicKey) // between 0 and 255 publicKeys
 ```
 
-#### 4. Dictionary Molds
+#### 4. Dictionary Templates
 
-Dictionary molds allow for encoding structs of data. When defining a dictionary mold, an array of molds is specified.
+Dictionary templates allow for encoding structs of data. When defining a dictionary template, an array of templates is specified.
 
 ```js
-storeDictionary = new Dictionary('store', [
-  nameMold,
-  publicKeysMold
+storeTemplate = new Dictionary('store', [
+  nameTemplate,
+  publicKeysTemplate
 ])
 ```
 
-#### 4. Fork/Branch Molds
+#### 5. Split Templates
 
-Fork and branch molds are key to hendricks' ability to elegantly upgrade as well as provide
+Imagine you create a protocol that includes transmitting a public key. Later on, you decide you want to change your protocol so that users can transmitting multiple public keys. A split template allows you to upgrade your protocol. When encoding, pass in a **branch index encoding length**, an array of strings for the branch names, and an array of templates.
+
+The **branches index encoding length** tells the template how many bytes to allocate to branch index. For example if you expect between 0 and 255 branches, use a **branches index encoding length** of 1. If you expect between 0 and 256**2 - 1 branches, use a **branches index encoding length** of 2.
+
+Branch Index Encoding Length | Min | Max |
+--- | --- | --- |
+1 | 0 | 255 |
+2 | 0 | (256 ** 2) - 1
+3 | 0 | (256 ** 3) - 1
+4 | 0 | (256 ** 4) - 1
+
 
 ```js
-storeDictionary = new Dictionary('store', [
-  nameMold,
-  publicKeysMold
+versionTemplate = new Split('version', 1, ['v0', 'v1'], [
+  publicKeyTemplate,
+  publicKeyTemplates
 ])
+
+versionTemplate.encode({
+  branch: 'v0',
+  value: publicKey
+})
+// > new Uint8Array([0, 1, 2, ..., 33])
+versionTemplate.encode({
+  branch: 'v1',
+  value: publicKeys
+})
+// > new Uint8Array([0, 2, 1, 2, ..., 33, 1, 2, ..., 33])
+```
+
+Split templates are also useful when your protocol changes based on a type byte. For example in SafeMarket a `0x00` byte tells the consumer to interpret the rest of the bytes as a store declaration, while a `0x01`  tells the consumer to interpret the bytes as a message. Here's how a split template could be used to encode this.
+
+```js
+typeTemplate = new Split('version', 1, ['store', 'message'], [
+  storeTemplate,
+  messageTemplate
+])
+
+versionTemplate.encode({
+  branch: 'store',
+  value: storeData
+})
+// > new Uint8Array([0, 1, 2, ..., 33])
+versionTemplate.encode({
+  branch: 'message',
+  value: publicKeys
+})
+// > new Uint8Array([0, 2, 1, 2, ..., 33, 1, 2, ..., 33])
 ```
 
 ### Length Encoding
@@ -88,7 +153,7 @@ Length is encoded using big-endian with left-padding.
 ## Usage
 
 ```js
-const Fork = require('hendricks/lib/Fork')
+const Split = require('hendricks/lib/Split')
 const Branch = require('hendricks/lib/Branch')
 const Dynamic = require('hendricks/lib/Dynamic')
 const Fixed = require('hendricks/lib/Fixed')

@@ -26,7 +26,7 @@ const params = [
 
 describe('dictionary', () => {
   params.forEach((param) => {
-    const molds = param[0]
+    const templates = param[0]
     const encoded = param[1]
     const pojo = param[2]
     it(`should encode ${pojo} to ${encoded}`, () => {

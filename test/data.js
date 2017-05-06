@@ -1,9 +1,8 @@
 const Dictionary = require('../lib/dictionary')
 const Dynamic = require('../lib/Dynamic')
 const Fixed = require('../lib/Fixed')
-const Fork = require('../lib/Fork')
+const Split = require('../lib/Split')
 const List = require('../lib/List')
-const Branch = require('../lib/Branch')
 const util = require('util')
 const chai = require('chai')
 
@@ -22,11 +21,8 @@ const storeDictionary = new Dictionary('store', [
   transportList
 ])
 const ciphertextDynamic = new Dynamic('ciphertext', 2)
-const storeBranch = new Branch('store', storeDictionary)
-const messageBranch = new Branch('message', ciphertextDynamic)
-const typeFork = new Fork('type', [storeBranch, messageBranch])
-const v0Branch = new Branch('v0', typeFork)
-const versionFork = new Fork('version', [v0Branch])
+const typeSplit = new Split('type', 1, ['store', 'message'], [storeDictionary, ciphertextDynamic])
+const versionSplit = new Split('version', 1, ['v0'], [typeSplit])
 
 chai.should()
 
@@ -71,13 +67,13 @@ const messageData = {
 
 describe('encoding/decoding', () => {
   it ('should encode and decode store', () => {
-    const encoded = versionFork.encode(storeData)
-    const result = versionFork.decode(encoded)
+    const encoded = versionSplit.encode(storeData)
+    const result = versionSplit.decode(encoded)
     result.value.should.deep.equal(storeData)
   })
   it ('should encode and decode message', () => {
-    const encoded = versionFork.encode(messageData)
-    const result = versionFork.decode(encoded)
+    const encoded = versionSplit.encode(messageData)
+    const result = versionSplit.decode(encoded)
     result.value.should.deep.equal(messageData)
   })
 })
