@@ -35,7 +35,7 @@ describe('dictionary', () => {
     })
     it(`should decode ${encoded} to ${pojo}`, () => {
       const stream = new Uint8Array()
-      dictionary.decode(encoded).value.should.deep.equal(pojo)
+      dictionary.decode(encoded).should.deep.equal(pojo)
     })
   })
 })

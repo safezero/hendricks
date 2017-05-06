@@ -59,7 +59,7 @@ describe('list', () => {
       list.encode(values).should.deep.equal(encoded)
     })
     it(`List(${lengthEncodingLength}) should decode [${encoded}] to [${values}]`, () => {
-      list.decode(encoded).value.should.deep.equal(values)
+      list.decode(encoded).should.deep.equal(values)
     })
   })
   // it('should throw BytesLengthError', () => {

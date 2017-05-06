@@ -69,11 +69,11 @@ describe('encoding/decoding', () => {
   it ('should encode and decode store', () => {
     const encoded = versionSplit.encode(storeData)
     const result = versionSplit.decode(encoded)
-    result.value.should.deep.equal(storeData)
+    result.should.deep.equal(storeData)
   })
   it ('should encode and decode message', () => {
     const encoded = versionSplit.encode(messageData)
     const result = versionSplit.decode(encoded)
-    result.value.should.deep.equal(messageData)
+    result.should.deep.equal(messageData)
   })
 })

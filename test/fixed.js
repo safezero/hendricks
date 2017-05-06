@@ -20,7 +20,7 @@ describe('fixed', () => {
       fixed.encode(value).should.deep.equal(value)
     })
     it(`Fixed(${length}) should decode [${value}] to [${value}]`, () => {
-      fixed.decode(value).value.should.deep.equal(value)
+      fixed.decode(value).should.deep.equal(value)
     })
   })
   it('should throw BytesLengthError with not enough bytes', () => {

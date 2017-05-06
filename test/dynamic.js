@@ -25,7 +25,7 @@ describe('dynamic', () => {
       dynamic.encode(value).should.deep.equal(encoded)
     })
     it(`Dynamic(${lengthEncodingLength}) should decode [${encoded}] to [${value}]`, () => {
-      dynamic.decode(encoded).value.should.deep.equal(value)
+      dynamic.decode(encoded).should.deep.equal(value)
     })
   })
   it('should throw BytesLengthError', () => {
