@@ -186,13 +186,6 @@ $ npm i -d && npm test
 
 Pull requests and stars are always welcome. For bugs and feature requests, [please create an issue](https://github.com/safezero/hendricks/issues)
 
-## Author
-
-***
-
-* [github/---](https://github.com/---)
-* [twitter/---](http://twitter.com/---)
-
 ## License
 
 Copyright © 2017 []()
