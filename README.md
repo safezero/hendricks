@@ -41,6 +41,9 @@ Fixed templates are designed for fixed-length data. They are useful when you kno
 Since the size of the data is fixed and needs no length-encoding, an encoding of a fixed template is simply the data itself.
 
 ```js
+
+const Fixed = require('hendricks/lib/Fixed')
+
 publicKeyTemplate = new Fixed('publicKey', 33)
 privateKeyKeyTemplate = new Fixed('privateKey', 32)
 
@@ -65,21 +68,28 @@ Length Encoding Length | Min | Max |
 4 | 0 | (256 ** 4) - 1
 
 ```js
+
+const Dynamic = require('hendricks/lib/Dynamic')
+
 nameTemplate = new Dynamic('name', 1) // name between 0 and 255 bytes
 infoTemplate = new Dynamic('info', 2) // name between 0 and 255 ** 2 bytes
 
 name.encode(new Uint8Array([1, 2, 3, 4]))
 // > Uint8Array([4, 1, 2, 3, 4])
 
-info.encode(new Uint8Array([5, 6, 7, 8, 9]))
-// > Uint8Array([0, 4, 5, 6, 7, 8, 9, 10])
+info.encode(new Uint8Array([1, 2, ..., 256]))
+// > Uint8Array([1, 0, 1, 2, ..., 256])
 ```
+
+Length encodings are big-endian and left-padded.
 
 #### 3. List Templates
 
 List templates allow for encoding arrays of data, where each element in the array is of the same template. When defining a list template, a *length encoding length* child template is needed.
 
 ```js
+const List = require('hendricks/lib/List')
+
 publicKeysTemplate = new List('publicKeys', 1, publicKey) // between 0 and 255 publicKeys
 ```
 
@@ -88,6 +98,8 @@ publicKeysTemplate = new List('publicKeys', 1, publicKey) // between 0 and 255 p
 Dictionary templates allow for encoding structs of data. When defining a dictionary template, an array of templates is specified.
 
 ```js
+const Dictionary = require('hendricks/lib/Dictionary')
+
 storeTemplate = new Dictionary('store', [
   nameTemplate,
   publicKeysTemplate
@@ -100,6 +112,8 @@ Imagine you create a protocol that includes transmitting a public key. Later on,
 
 The **branches index encoding length** tells the template how many bytes to allocate to branch index. For example if you expect between 0 and 255 branches, use a **branches index encoding length** of 1. If you expect between 0 and 256**2 - 1 branches, use a **branches index encoding length** of 2.
 
+Branch indexes are big-endian and left-padded.
+
 Branch Index Encoding Length | Min | Max |
 --- | --- | --- |
 1 | 0 | 255 |
@@ -109,6 +123,8 @@ Branch Index Encoding Length | Min | Max |
 
 
 ```js
+const Split = require('hendricks/lib/Split')
+
 versionTemplate = new Split('version', 1, ['v0', 'v1'], [
   publicKeyTemplate,
   publicKeyTemplates
@@ -129,6 +145,8 @@ versionTemplate.encode({
 Split templates are also useful when your protocol changes based on a type byte. For example in SafeMarket a `0x00` byte tells the consumer to interpret the rest of the bytes as a store declaration, while a `0x01`  tells the consumer to interpret the bytes as a message. Here's how a split template could be used to encode this.
 
 ```js
+const Split = require('hendricks/lib/Split')
+
 typeTemplate = new Split('version', 1, ['store', 'message'], [
   storeTemplate,
   messageTemplate
@@ -154,7 +172,7 @@ Length is encoded using big-endian with left-padding.
 
 ```js
 const Split = require('hendricks/lib/Split')
-const Branch = require('hendricks/lib/Branch')
+const Dictionary = require('hendricks/lib/Dictionary')
 const Dynamic = require('hendricks/lib/Dynamic')
 const Fixed = require('hendricks/lib/Fixed')
 const List = require('hendricks/lib/List')
