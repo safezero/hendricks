@@ -22,8 +22,6 @@ Protocols also need the ability to "split" to a different schema based on a vers
 
 Hendricks lets any protocol developer create easily upgradable, and splitable, protocols while being extremely conservative with bytes.
 
-Hendricks has no official specifier like protobuf's proto files. Rather a specifier called [dinesh](dinesh) exists to create a JSON spec. Specifiers are split out to allow for different specs that makes different sense in different contexts (for example, languages which don't support cleanly support JSON).
-
 ### Binary only
 
 Hendricks has no support for strings, integers, etc. Everything must be converted into binary before being encoded. For the javascript implementation, that means `Uint8Array`s.
