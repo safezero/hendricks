@@ -106,7 +106,9 @@ storeTemplate = new Dictionary('store', [
 
 #### 5. Split Templates
 
-Imagine you create a protocol that includes transmitting a public key. Later on, you decide you want to change your protocol so that users can transmitting multiple public keys. A split template allows you to upgrade your protocol. When encoding, pass in a **branch index encoding length**, an array of strings for the branch names, and an array of templates.
+Imagine you create a protocol that includes transmitting a public key. Later on, you decide you want to change your protocol so that users can transmitting multiple public keys. A split template allows you to upgrade your protocol.
+
+When creating a split template, pass in a **branch index encoding length**, an array of strings for the branch names, and an array of templates.
 
 The **branches index encoding length** tells the template how many bytes to allocate to branch index. For example if you expect between 0 and 255 branches, use a **branches index encoding length** of 1. If you expect between 0 and 256**2 - 1 branches, use a **branches index encoding length** of 2.
 
