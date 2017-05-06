@@ -137,7 +137,7 @@ versionTemplate.encode({
   branch: 'v1',
   value: publicKeys
 })
-// > new Uint8Array([0, 2, 1, 2, ..., 33, 1, 2, ..., 33])
+// > new Uint8Array([1, 2, 1, 2, ..., 33, 1, 2, ..., 33])
 ```
 
 Split templates are also useful when your protocol changes based on a type byte. For example in SafeMarket a `0x00` byte tells the consumer to interpret the rest of the bytes as a store declaration, while a `0x01`  tells the consumer to interpret the bytes as a message. Here's how a split template could be used to encode this.
