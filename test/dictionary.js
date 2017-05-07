@@ -2,7 +2,6 @@ const Dictionary = require('../lib/Dictionary')
 const Fixed = require('../lib/Fixed')
 const Dynamic = require('../lib/Dynamic')
 const chai = require('chai')
-const Branch = require('../lib/Branch')
 
 chai.should()
 
