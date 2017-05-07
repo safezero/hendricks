@@ -159,9 +159,9 @@ versionTemplate.encode({
 // > new Uint8Array([0, 1, 2, ..., 33])
 versionTemplate.encode({
   branch: 'message',
-  value: publicKeys
+  value: messageData
 })
-// > new Uint8Array([0, 2, 1, 2, ..., 33, 1, 2, ..., 33])
+// > new Uint8Array([0, 2, 1, 2, ..., 1000])
 ```
 
 ## Usage
