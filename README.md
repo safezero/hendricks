@@ -36,7 +36,7 @@ There are 5 kinds of templates: fixed templates (1), dynamic templates (2), list
 
 Fixed templates are designed for fixed-length data. They are useful when you know the size of the data never changes, for example elliptic curve keypairs and IP addresses. When defining a fixed template, the size of the data must be specified.
 
-Since the size of the data is fixed and needs no length-encoding, an encoding of a fixed template is simply the data itself.
+Since the size of the data is fixed and needs no length encoding, an encoding of a fixed template is simply the data itself.
 
 ```js
 
