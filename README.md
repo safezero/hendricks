@@ -30,7 +30,7 @@ Hendricks has no support for strings, integers, etc. Everything must be converte
 
 The primary concept in hendricks is the template. You can think of a template like a container that data can be placed in. Each template has their own encoding scheme, and templates can be nested into other templates. Every schema has a single root template.
 
-There are 5 kinds of templates: fixed templates (1), dynamic tempates (2), list templates (3), dictionary templates (4), split templates templates (5).
+There are 5 kinds of templates: fixed templates (1), dynamic templates (2), list templates (3), dictionary templates (4), split templates templates (5).
 
 #### 1. Fixed Templates
 
