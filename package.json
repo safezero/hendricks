@@ -1,6 +1,6 @@
 {
   "name": "hendricks",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Very tiny byte encoding",
   "main": "https://github.com/safezero/hendricks.git",
   "scripts": {
