@@ -58,7 +58,7 @@ privateKeyKeyTemplate.encode(myPrivateKey)
 
 Dynamic templates allow for encoding variable-length data. When defining a dynamic template, the number of bytes needed to encode the length, referred to as the **length encoding length**, is specified. For example, if a dynamic field must contain data between 0 and 255 bytes, a **length encoding length** of 1 is needed. If a dynamic field contains between 0 and (256**2 - 1) bytes, a **length encoding length** of 2 is needed.
 
-Length Encoding Length | Min | Max |
+Length Encoding Length | Min Length | Max Length |
 --- | --- | --- |
 1 | 0 | 255 |
 2 | 0 | (256 ** 2) - 1
@@ -114,7 +114,7 @@ The **branches index encoding length** tells the template how many bytes to allo
 
 Branch indexes are big-endian and left-padded.
 
-Branch Index Encoding Length | Min | Max |
+Branch Index Encoding Length | Min Branch Index | Max Branch Index |
 --- | --- | --- |
 1 | 0 | 255 |
 2 | 0 | (256 ** 2) - 1
