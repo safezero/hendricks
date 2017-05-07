@@ -56,7 +56,7 @@ privateKeyKeyTemplate.encode(myPrivateKey)
 
 #### 2. Dynamic Templates
 
-Dynamic templates allow for encoding variable-length data. When defining a dynamic template, the number of bytes needed to encode the length, referred to as the *length encoding length*, is specified. For example, if a dynamic field must contain data between 0 and 255 bytes, a *length encoding length* of 1 is needed. If a dynamic field contains between 0 and (256**2 - 1) bytes, a *length encoding length* of 2 is needed.
+Dynamic templates allow for encoding variable-length data. When defining a dynamic template, the number of bytes needed to encode the length, referred to as the **length encoding length**, is specified. For example, if a dynamic field must contain data between 0 and 255 bytes, a **length encoding length** of 1 is needed. If a dynamic field contains between 0 and (256**2 - 1) bytes, a **length encoding length** of 2 is needed.
 
 Length Encoding Length | Min | Max |
 --- | --- | --- |
@@ -83,7 +83,7 @@ Length encodings are big-endian and left-padded.
 
 #### 3. List Templates
 
-List templates allow for encoding arrays of data, where each element in the array is of the same template. When defining a list template, a *length encoding length* child template is needed.
+List templates allow for encoding arrays of data, where each element in the array is of the same template. When defining a list template, a **length encoding length** child template is needed.
 
 ```js
 const List = require('hendricks/lib/List')
@@ -147,7 +147,7 @@ Split templates are also useful when your protocol changes based on a type byte.
 ```js
 const Split = require('hendricks/lib/Split')
 
-typeTemplate = new Split('version', 1, ['store', 'message'], [
+typeTemplate = new Split('type', 1, ['store', 'message'], [
   storeTemplate,
   messageTemplate
 ])
