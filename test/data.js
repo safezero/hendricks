@@ -29,11 +29,11 @@ const versionSplit = new Split(1, [versionKey], [typeSplit])
 
 chai.should()
 
-const storeData = {
-  key: versionKey,
-  value: {
-    key: storeKey,
-    value: [
+const storeData = [
+  versionKey,
+  [
+    storeKey,
+    [
       new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
       new Uint8Array([1, 2, 3, 4]),
       new Uint8Array([1, 2, 3, 4, 5, 6]),
@@ -58,17 +58,12 @@ const storeData = {
         ]
       ]
     ]
-  }
-}
-const ciphertextData = {
-  key: versionKey,
-  value: {
-    key: ciphertextKey,
-    value: new Uint8Array([1, 2, 3, 4, 5])
-  }
-}
+  ]
+]
 
-describe('encoding/decoding', () => {
+const ciphertextData = [versionKey, [ciphertextKey, new Uint8Array([1, 2, 3, 4, 5]) ]]
+
+describe('store/ciphertext', () => {
   it ('should encode and decode store', () => {
     const encoded = versionSplit.encode(storeData)
     const result = versionSplit.decode(encoded)
