@@ -15,7 +15,7 @@ describe('fixed', () => {
   params.forEach((param) => {
     const length = param[0]
     const value = param[1]
-    const fixed = new Fixed('myFixed', length)
+    const fixed = new Fixed(length)
     it(`Fixed(${length}) should encode [${value}] to [${value}]`, () => {
       fixed.encode(value).should.deep.equal(value)
     })
@@ -25,13 +25,13 @@ describe('fixed', () => {
   })
   it('should throw BytesLengthError with not enough bytes', () => {
     (() => {
-      const fixed = new Fixed('myFixed', 2)
+      const fixed = new Fixed(2)
       fixed.encode(new Uint8Array([1]))
     }).should.throw(BytesLengthError)
   })
   it('should throw BytesLengthError with too many bytes', () => {
     (() => {
-      const fixed = new Fixed('myFixed', 2)
+      const fixed = new Fixed(2)
       fixed.encode(new Uint8Array([1, 2, 3]))
     }).should.throw(BytesLengthError)
   })

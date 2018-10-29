@@ -5,22 +5,38 @@ const chai = require('chai')
 
 chai.should()
 
-const infoDynamic = new Dynamic('info', 2)
-const nameDynamic = new Dynamic('name', 2)
-const publicKeyDynamic = new Fixed('publicKey', 3)
-const dictionary = new Dictionary('mydictionary', [infoDynamic, nameDynamic, publicKeyDynamic])
+const infoDynamic = new Dynamic(2)
+const nameDynamic = new Dynamic(2)
+const publicKeyDynamic = new Fixed(3)
+const dictionary = new Dictionary([infoDynamic, nameDynamic, publicKeyDynamic])
 
 const params = [
-  [[infoDynamic, nameDynamic, publicKeyDynamic], new Uint8Array([0, 1, 1, 0, 2, 2, 2, 3, 3, 3]), {
-    info: new Uint8Array([1]),
-    name: new Uint8Array([2, 2]),
-    publicKey: new Uint8Array([3, 3, 3])
-  }],
-  [[nameDynamic, publicKeyDynamic, infoDynamic], new Uint8Array([0, 1, 1, 0, 2, 2, 2, 3, 3, 3]), {
-    info: new Uint8Array([1]),
-    name: new Uint8Array([2, 2]),
-    publicKey: new Uint8Array([3, 3, 3])
-  }]
+  [
+    [
+      infoDynamic,
+      nameDynamic,
+      publicKeyDynamic
+    ],
+    new Uint8Array([0, 1, 1, 0, 2, 2, 2, 3, 3, 3]),
+    [
+      new Uint8Array([1]),
+      new Uint8Array([2, 2]),
+      new Uint8Array([3, 3, 3])
+    ]
+  ],
+  [
+    [
+      nameDynamic,
+      publicKeyDynamic,
+      infoDynamic
+    ],
+    new Uint8Array([0, 1, 1, 0, 2, 2, 2, 3, 3, 3]),
+    [
+      new Uint8Array([1]),
+      new Uint8Array([2, 2]),
+      new Uint8Array([3, 3, 3])
+    ]
+  ]
 ]
 
 describe('dictionary', () => {

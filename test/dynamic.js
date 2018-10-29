@@ -19,7 +19,7 @@ describe('dynamic', () => {
     const lengthEncodingLength = param[0]
     const value = param[1]
     const encoded = param[2]
-    const dynamic = new Dynamic('myDynamic', lengthEncodingLength)
+    const dynamic = new Dynamic(lengthEncodingLength)
 
     it(`Dynamic(${lengthEncodingLength}) should encode [${value}] to [${encoded}]`, () => {
       dynamic.encode(value).should.deep.equal(encoded)
@@ -30,7 +30,7 @@ describe('dynamic', () => {
   })
   it('should throw BytesLengthError', () => {
     (() => {
-      const dynamic = new Dynamic('big', 1)
+      const dynamic = new Dynamic(1)
       dynamic.encode(new Uint8Array(bigArray))
     }).should.throw(BytesLengthError)
   })

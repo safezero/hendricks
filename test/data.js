@@ -3,68 +3,67 @@ const Dynamic = require('../lib/Dynamic')
 const Fixed = require('../lib/Fixed')
 const Split = require('../lib/Split')
 const List = require('../lib/List')
-const Remainder = require('../lib/Remainder')
 const util = require('util')
 const chai = require('chai')
 
-const publicKeyFixed = new Fixed('publicKey', 12)
-const nameDynamic = new Dynamic('name', 1)
-const infoDynamic = new Dynamic('info', 2)
-const productDictionary = new Dictionary('product', [nameDynamic, infoDynamic])
-const productList = new List('products', 1, productDictionary)
-const transportDictionary = new Dictionary('transport', [nameDynamic, infoDynamic])
-const transportList = new List('transports', 1, transportDictionary)
-const extradataRemainder = new Remainder('extradata')
-const storeDictionary = new Dictionary('store', [
+const publicKeyFixed = new Fixed(12)
+const nameDynamic = new Dynamic(1)
+const infoDynamic = new Dynamic(2)
+const productDictionary = new Dictionary([nameDynamic, infoDynamic])
+const productList = new List(1, productDictionary)
+const transportDictionary = new Dictionary([nameDynamic, infoDynamic])
+const transportList = new List(1, transportDictionary)
+const storeDictionary = new Dictionary([
   publicKeyFixed,
   nameDynamic,
   infoDynamic,
   productList,
-  transportList,
-  extradataRemainder
+  transportList
 ])
-const ciphertextDynamic = new Dynamic('ciphertext', 2)
-const typeSplit = new Split('type', 1, ['store', 'message'], [storeDictionary, ciphertextDynamic])
-const versionSplit = new Split('version', 1, ['v0'], [typeSplit])
+const ciphertextDynamic = new Dynamic(2)
+const storeKey = new Uint8Array([0])
+const ciphertextKey = new Uint8Array([1])
+const versionKey = new Uint8Array([0])
+const typeSplit = new Split(1, [storeKey, ciphertextKey], [storeDictionary, ciphertextDynamic])
+const versionSplit = new Split(1, [versionKey], [typeSplit])
 
 chai.should()
 
 const storeData = {
-  branch: 'v0',
+  key: versionKey,
   value: {
-    branch: 'store',
-    value: {
-      publicKey: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
-      name: new Uint8Array([1, 2, 3, 4]),
-      info: new Uint8Array([1, 2, 3, 4, 5, 6]),
-      products: [
-        {
-          name: new Uint8Array([1, 2, 3, 4]),
-          info: new Uint8Array([1, 2, 3, 4, 5, 6])
-        },
-        {
-          name: new Uint8Array([1, 2, 3, 4]),
-          info: new Uint8Array([1, 2, 3, 4, 5, 6])
-        }
+    key: storeKey,
+    value: [
+      new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
+      new Uint8Array([1, 2, 3, 4]),
+      new Uint8Array([1, 2, 3, 4, 5, 6]),
+      [
+        [
+          new Uint8Array([1, 2, 3, 4]),
+          new Uint8Array([1, 2, 3, 4, 5, 6])
+        ],
+        [
+          new Uint8Array([1, 2, 3, 4]),
+          new Uint8Array([1, 2, 3, 4, 5, 6])
+        ]
       ],
-      transports: [
-        {
-          name: new Uint8Array([1, 2, 3, 4]),
-          info: new Uint8Array([1, 2, 3, 4, 5, 6])
-        },
-        {
-          name: new Uint8Array([1, 2, 3, 4]),
-          info: new Uint8Array([1, 2, 3, 4, 5, 6])
-        }
-      ],
-      extradata: new Uint8Array([1, 2, 3, 4])
-    }
+      [
+        [
+          new Uint8Array([1, 2, 3, 4]),
+          new Uint8Array([1, 2, 3, 4, 5, 6])
+        ],
+        [
+          new Uint8Array([1, 2, 3, 4]),
+          new Uint8Array([1, 2, 3, 4, 5, 6])
+        ]
+      ]
+    ]
   }
 }
-const messageData = {
-  branch: 'v0',
+const ciphertextData = {
+  key: versionKey,
   value: {
-    branch: 'message',
+    key: ciphertextKey,
     value: new Uint8Array([1, 2, 3, 4, 5])
   }
 }
@@ -75,9 +74,9 @@ describe('encoding/decoding', () => {
     const result = versionSplit.decode(encoded)
     result.should.deep.equal(storeData)
   })
-  it ('should encode and decode message', () => {
-    const encoded = versionSplit.encode(messageData)
+  it ('should encode and decode ciphertext', () => {
+    const encoded = versionSplit.encode(ciphertextData)
     const result = versionSplit.decode(encoded)
-    result.should.deep.equal(messageData)
+    result.should.deep.equal(ciphertextData)
   })
 })

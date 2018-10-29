@@ -8,9 +8,9 @@ const util = require('util')
 
 chai.should()
 
-const dynamic = new Dynamic('myDynamic', 2)
-const fixed = new Fixed('myFixed', 2)
-const dictionary = new Dictionary('myDictionary', [dynamic, fixed])
+const dynamic = new Dynamic(2)
+const fixed = new Fixed(2)
+const dictionary = new Dictionary([dynamic, fixed])
 
 const params = [
   [
@@ -35,14 +35,8 @@ const params = [
     2,
     dictionary,
     [
-      {
-        myDynamic: new Uint8Array([1]),
-        myFixed: new Uint8Array([1, 1])
-      },
-      {
-        myDynamic: new Uint8Array([2]),
-        myFixed: new Uint8Array([2, 2])
-      }
+      [new Uint8Array([1]), new Uint8Array([1, 1])],
+      [new Uint8Array([2]), new Uint8Array([2, 2])]
     ],
     new Uint8Array([0, 2, 0, 1, 1, 1, 1, 0, 1, 2, 2, 2])
   ]
@@ -52,7 +46,7 @@ describe('list', () => {
   params.forEach((param) => {
     const lengthEncodingLength = param[0]
     const template = param[1]
-    const list = new List('myList', lengthEncodingLength, template)
+    const list = new List(lengthEncodingLength, template)
     const values = param[2]
     const encoded = param[3]
     it(`List(${lengthEncodingLength}) should encode [${values}] to [${encoded}]`, () => {
