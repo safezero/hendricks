@@ -35,10 +35,10 @@ describe('optional', () => {
     const template = param[0]
     const from = param[1]
     const to = param[2]
-    it(`myOptionalTemplate should encode [${from}] to [${to}]`, () => {
+    it(`Optional should encode [${from}] to [${to}]`, () => {
       chai.expect(template.encode(from)).to.deep.equal(to)
     })
-    it(`myOptionalTemplate should decode [${to}] to [${from}]`, () => {
+    it(`Optional should decode [${to}] to [${from}]`, () => {
       chai.expect(template.decode(to)).to.deep.equal(from)
     })
   })
