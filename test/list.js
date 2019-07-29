@@ -10,7 +10,7 @@ chai.should()
 
 const dynamic = new Dynamic(2)
 const fixed = new Fixed(2)
-const dictionary = new Dictionary([dynamic, fixed])
+const dictionary = new Dictionary(['dynamic', 'fixed'], [dynamic, fixed])
 
 const params = [
   [
@@ -35,8 +35,14 @@ const params = [
     2,
     dictionary,
     [
-      [new Uint8Array([1]), new Uint8Array([1, 1])],
-      [new Uint8Array([2]), new Uint8Array([2, 2])]
+      {
+        dynamic: new Uint8Array([1]),
+        fixed: new Uint8Array([1, 1])
+      },
+      {
+        dynamic: new Uint8Array([2]),
+        fixed: new Uint8Array([2, 2])
+      }
     ],
     new Uint8Array([0, 2, 0, 1, 1, 1, 1, 0, 1, 2, 2, 2])
   ]

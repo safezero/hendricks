@@ -42,8 +42,8 @@ Since the size of the data is fixed and needs no length encoding, an encoding of
 
 const Fixed = require('hendricks/lib/Fixed')
 
-publicKeyTemplate = new Fixed('publicKey', 33)
-privateKeyKeyTemplate = new Fixed('privateKey', 32)
+publicKeyTemplate = new Fixed(33)
+privateKeyKeyTemplate = new Fixed(32)
 
 myPublicKey = new Uint8Array([1, 2, ..., 33])
 myPrivateKey = new Uint8Array([1, 2, ..., 32])
@@ -69,8 +69,8 @@ Length Encoding Length | Min Length | Max Length |
 
 const Dynamic = require('hendricks/lib/Dynamic')
 
-nameTemplate = new Dynamic('name', 1) // name between 0 and 255 bytes
-infoTemplate = new Dynamic('info', 2) // name between 0 and 255 ** 2 bytes
+nameTemplate = new Dynamic(1) // name between 0 and 255 bytes
+infoTemplate = new Dynamic(2) // info between 0 and 255 ** 2 bytes
 
 name.encode(new Uint8Array([1, 2, 3, 4]))
 // > Uint8Array([4, 1, 2, 3, 4])
@@ -88,7 +88,7 @@ List templates allow for encoding arrays of data, where each element in the arra
 ```js
 const List = require('hendricks/lib/List')
 
-publicKeysTemplate = new List('publicKeys', 1, publicKey) // between 0 and 255 publicKeys
+publicKeysTemplate = new List(1, publicKey) // between 0 and 255 publicKeys
 ```
 
 #### 4. Dictionary Templates
@@ -98,7 +98,7 @@ Dictionary templates allow for encoding structs of data. When defining a diction
 ```js
 const Dictionary = require('hendricks/lib/Dictionary')
 
-storeTemplate = new Dictionary('store', [
+storeTemplate = new Dictionary(['name', 'publicKeys'], [
   nameTemplate,
   publicKeysTemplate
 ])
@@ -125,18 +125,18 @@ Branch Index Encoding Length | Min Branch Index | Max Branch Index |
 ```js
 const Split = require('hendricks/lib/Split')
 
-versionTemplate = new Split('version', 1, ['v0', 'v1'], [
+versionTemplate = new Split(1, ['v0', 'v1'], [
   publicKeyTemplate,
   publicKeyTemplates
 ])
 
 versionTemplate.encode({
-  branch: 'v0',
+  key: 'v0',
   value: publicKey
 })
 // > new Uint8Array([0, 1, 2, ..., 33])
 versionTemplate.encode({
-  branch: 'v1',
+  key: 'v1',
   value: publicKeys
 })
 // > new Uint8Array([1, 2, 1, 2, ..., 33, 1, 2, ..., 33])
@@ -147,21 +147,21 @@ Split templates are also useful when your protocol changes based on a type byte.
 ```js
 const Split = require('hendricks/lib/Split')
 
-typeTemplate = new Split('type', 1, ['store', 'message'], [
+typeTemplate = new Split(['store', 'message'], [
   storeTemplate,
   messageTemplate
 ])
 
 versionTemplate.encode({
-  branch: 'store',
+  key: 'store',
   value: storeData
 })
-// > new Uint8Array([0, 1, 2, ..., 33])
+// > new Uint8Array([0, 2, ..., 33])
 versionTemplate.encode({
-  branch: 'message',
+  key: 'message',
   value: messageData
 })
-// > new Uint8Array([0, 2, 1, 2, ..., 1000])
+// > new Uint8Array([1, 1, 2, ..., 1000])
 ```
 
 ## Usage

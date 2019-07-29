@@ -9,23 +9,25 @@ chai.should()
 
 
 const fromTemplate = new OptionalTemplate(new DynamicTemplate(1))
-const messageTemplate = new DictionaryTemplate([fromTemplate, new DynamicTemplate(1)])
+const messageTemplate = new DictionaryTemplate(['from', 'body'], [fromTemplate, new DynamicTemplate(1)])
 
 const params = [
   [fromTemplate, null, new Uint8Array([0])],
   [fromTemplate, new Uint8Array([1, 2, 3]), new Uint8Array([1, 3, 1, 2, 3])],
   [
-    messageTemplate, [
-      null,
-      new Uint8Array([4, 5, 6])
-    ],
+    messageTemplate,
+    {
+      from: null,
+      body: new Uint8Array([4, 5, 6])
+    },
     new Uint8Array([0, 3, 4, 5, 6])
   ],
   [
-    messageTemplate, [
-      new Uint8Array([1, 2, 3]),
-      new Uint8Array([4, 5, 6])
-    ],
+    messageTemplate,
+    {
+      from: new Uint8Array([1, 2, 3]),
+      body: new Uint8Array([4, 5, 6])
+    },
     new Uint8Array([1, 3, 1, 2, 3, 3, 4, 5, 6])
   ]
 ]

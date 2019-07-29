@@ -9,11 +9,17 @@ const chai = require('chai')
 const publicKeyFixed = new Fixed(12)
 const nameDynamic = new Dynamic(1)
 const infoDynamic = new Dynamic(2)
-const productDictionary = new Dictionary([nameDynamic, infoDynamic])
+const productDictionary = new Dictionary(['name', 'info'], [nameDynamic, infoDynamic])
 const productList = new List(1, productDictionary)
-const transportDictionary = new Dictionary([nameDynamic, infoDynamic])
+const transportDictionary = new Dictionary(['name', 'info'], [nameDynamic, infoDynamic])
 const transportList = new List(1, transportDictionary)
 const storeDictionary = new Dictionary([
+  'publicKey',
+  'name',
+  'info',
+  'products',
+  'transports'
+],[
   publicKeyFixed,
   nameDynamic,
   infoDynamic,
@@ -24,44 +30,50 @@ const ciphertextDynamic = new Dynamic(2)
 const storeKey = new Uint8Array([0])
 const ciphertextKey = new Uint8Array([1])
 const versionKey = new Uint8Array([0])
-const typeSplit = new Split(1, [storeKey, ciphertextKey], [storeDictionary, ciphertextDynamic])
-const versionSplit = new Split(1, [versionKey], [typeSplit])
+const typeSplit = new Split(['store', 'ciphertext'], [storeDictionary, ciphertextDynamic])
+const versionSplit = new Split(['v0'], [typeSplit])
 
 chai.should()
 
-const storeData = [
-  versionKey,
-  [
-    storeKey,
-    [
-      new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
-      new Uint8Array([1, 2, 3, 4]),
-      new Uint8Array([1, 2, 3, 4, 5, 6]),
-      [
-        [
-          new Uint8Array([1, 2, 3, 4]),
-          new Uint8Array([1, 2, 3, 4, 5, 6])
-        ],
-        [
-          new Uint8Array([1, 2, 3, 4]),
-          new Uint8Array([1, 2, 3, 4, 5, 6])
-        ]
+const storeData = {
+  key: 'v0',
+  value: {
+    key: 'store',
+    value: {
+      publicKey: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
+      name: new Uint8Array([1, 2, 3, 4]),
+      info: new Uint8Array([1, 2, 3, 4, 5, 6]),
+      products: [
+        {
+          name: new Uint8Array([1, 2, 3, 4]),
+          info: new Uint8Array([1, 2, 3, 4, 5, 6])
+        },
+        {
+          name: new Uint8Array([1, 2, 3, 4]),
+          info: new Uint8Array([1, 2, 3, 4, 5, 6])
+        }
       ],
-      [
-        [
-          new Uint8Array([1, 2, 3, 4]),
-          new Uint8Array([1, 2, 3, 4, 5, 6])
-        ],
-        [
-          new Uint8Array([1, 2, 3, 4]),
-          new Uint8Array([1, 2, 3, 4, 5, 6])
-        ]
+      transports: [
+        {
+          name: new Uint8Array([1, 2, 3, 4]),
+          info: new Uint8Array([1, 2, 3, 4, 5, 6])
+        },
+        {
+          name: new Uint8Array([1, 2, 3, 4]),
+          info: new Uint8Array([1, 2, 3, 4, 5, 6])
+        }
       ]
-    ]
-  ]
-]
+    }
+  }
+}
 
-const ciphertextData = [versionKey, [ciphertextKey, new Uint8Array([1, 2, 3, 4, 5]) ]]
+const ciphertextData = {
+  key: 'v0',
+  value: {
+    key: 'ciphertext',
+    value: new Uint8Array([1, 2, 3, 4, 5])
+  }
+}
 
 describe('store/ciphertext', () => {
   it ('should encode and decode store', () => {
